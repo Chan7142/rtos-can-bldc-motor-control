@@ -1,2 +1,0 @@
-../Core/Src/rcc.c:3:6:delay_ms	24	static
-../Core/Src/rcc.c:18:6:SystemClock_Config_Max	40	static

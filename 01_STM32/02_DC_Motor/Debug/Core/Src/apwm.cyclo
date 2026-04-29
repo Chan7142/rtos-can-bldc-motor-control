@@ -1,0 +1,5 @@
+../Core/Src/apwm.c:3:6:PWM_TIM1_Base_Init	1
+../Core/Src/apwm.c:15:6:PWM_TIM1_CH1_Init	1
+../Core/Src/apwm.c:25:6:PWM_TIM1_CH1_Setduty	1
+../Core/Src/apwm.c:29:6:PWM_TIM1_CH2_Init	1
+../Core/Src/apwm.c:39:6:PWM_TIM1_CH2_Setduty	1
