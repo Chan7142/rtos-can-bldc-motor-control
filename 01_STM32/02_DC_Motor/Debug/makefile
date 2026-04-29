@@ -34,34 +34,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := 02_DMA_SPI
+BUILD_ARTIFACT_NAME := 02_DC_Motor
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-02_DMA_SPI.elf \
+02_DC_Motor.elf \
 
 MAP_FILES += \
-02_DMA_SPI.map \
+02_DC_Motor.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-02_DMA_SPI.list \
+02_DC_Motor.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: 02_DMA_SPI.elf secondary-outputs
+main-build: 02_DC_Motor.elf secondary-outputs
 
 # Tool invocations
-02_DMA_SPI.elf 02_DMA_SPI.map: $(OBJS) $(USER_OBJS) C:\Users\LSC\Desktop\rtos-can-dc-motor-control\01_STM32\02_DMA_SPI\STM32F767ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "02_DMA_SPI.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\LSC\Desktop\rtos-can-dc-motor-control\01_STM32\02_DMA_SPI\STM32F767ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="02_DMA_SPI.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+02_DC_Motor.elf 02_DC_Motor.map: $(OBJS) $(USER_OBJS) C:\Users\LSC\Desktop\rtos-can-dc-motor-control\01_STM32\02_DC_Motor\STM32F767ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "02_DC_Motor.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\LSC\Desktop\rtos-can-dc-motor-control\01_STM32\02_DC_Motor\STM32F767ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="02_DC_Motor.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -70,14 +70,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-02_DMA_SPI.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "02_DMA_SPI.list"
+02_DC_Motor.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "02_DC_Motor.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) 02_DMA_SPI.elf 02_DMA_SPI.list 02_DMA_SPI.map default.size.stdout
+	-$(RM) 02_DC_Motor.elf 02_DC_Motor.list 02_DC_Motor.map default.size.stdout
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
