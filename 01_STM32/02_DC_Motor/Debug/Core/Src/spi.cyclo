@@ -1,6 +1,0 @@
-../Core/Src/spi.c:3:6:DMA2_config_SPI1_TX	2
-../Core/Src/spi.c:42:6:SPI1_DMA_transfer	4
-../Core/Src/spi.c:67:6:SPI1_WriteByte_Polling	3
-../Core/Src/spi.c:73:6:CS_ON	1
-../Core/Src/spi.c:76:6:CS_OFF	1
-../Core/Src/spi.c:80:6:SPI_GPIO_Init	1

@@ -1,0 +1,6 @@
+../Core/Src/spi.c:3:6:DMA2_config_SPI1_TX	16	static
+../Core/Src/spi.c:35:6:SPI1_DMA_transfer	16	static
+../Core/Src/spi.c:59:6:SPI1_WriteByte_Polling	16	static
+../Core/Src/spi.c:65:6:CS_ON	8	static
+../Core/Src/spi.c:68:6:CS_OFF	8	static
+../Core/Src/spi.c:72:6:SPI_GPIO_Init	8	static
