@@ -1,5 +1,6 @@
 #include "encoder.h"
 
+
 //PD12 PD13
 void Encoder_TIM4_Init(void) {
     // 1. 클럭 활성화 (GPIOD, TIM4)

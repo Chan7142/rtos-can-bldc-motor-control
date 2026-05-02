@@ -1,6 +1,6 @@
 #ifndef TIMER_H
 #define TIMER_H
-
+#include <stdint.h>
 typedef struct {
     volatile uint32_t CR1;      // 0x00
     volatile uint32_t CR2;      // 0x04
@@ -34,4 +34,6 @@ typedef struct {
 #define TIM3		((TIM_Gen_TypeDef*)TIM3_BASE)
 #define TIM4		((TIM_Gen_TypeDef*)TIM4_BASE)
 #define TIM5		((TIM_Gen_TypeDef*)TIM5_BASE)
+void TIM2_Init(void);
+
 #endif

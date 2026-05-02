@@ -29,6 +29,12 @@ typedef struct {
 
 void delay_ms(uint32_t ms);
 void SystemClock_Config_Max(void);
+void SysTick_Handler(void);
+void SysTick_Init(uint32_t ticks);
+void SysTick_Handler(void);
+uint32_t get_tick(void);
+
+
 
 
 #define SYSTICK_BASE    0xE000E010UL

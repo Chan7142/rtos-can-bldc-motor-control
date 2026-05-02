@@ -8,16 +8,18 @@
 #include "rcc.h"
 #include "encoder.h"
 #include "usart.h"
+#include "timer.h"
+extern volatile uint32_t msTicks = 0;
 const uint32_t ENCODER_RESOLUTION = 1320;
 void SystemClock_Config_Max(void);
 uint32_t current_cnt = 0;
-uint32_t gCount = 0;
-uint32_t T_s = 0;
+float gCount = 0;
+float time = 0;
 float u_k = 0;
 float d1 = 0;
 float d2 = 0;
 float D = 0;
-float pi = 3.141592;
+float pi = 3.14159265;
 float speed_rad = 0;
 float speed_rpm = 0;
 float Ts = 0.01;
@@ -47,11 +49,34 @@ float get_motor_speed_rpm(){
 	cnt_prev = cnt_cur;
 	return ((float)delta_cnt/ENCODER_RESOLUTION)* 60 / Ts;
 }
-
+float get_motor_speed_rad(){
+	cnt_cur = Get_Encoder_Count();
+	int16_t delta_cnt = (int16_t)(cnt_cur - cnt_prev);
+	if (delta_cnt < -32768) {
+	    delta_cnt += 65536;
+	}
+	else if (delta_cnt > 32768) {
+	    delta_cnt -= 65536;
+	}
+	cnt_prev = cnt_cur;
+	return ((float)delta_cnt/ENCODER_RESOLUTION)* 2 * pi / Ts;
+}
+void TIM2_IRQHandler(void) {
+    if (TIM2->SR & (1<<0)) {
+        TIM2->SR &= ~(1<<0);
+        motor_input(6);
+       	//speed_rpm = get_motor_speed_rpm();
+       	speed_rad = get_motor_speed_rad();
+       	gCount += Ts;
+        time = gCount;
+    }
+}
 int main(void)
 {
-
+	msTicks = 0;
+	__asm__("CPSIE i");
 	SystemClock_Config_Max();
+	SysTick_Init(216000000);
 
 	SPI_GPIO_Init();
 	DMA_Init();
@@ -69,17 +94,17 @@ int main(void)
 	Encoder_TIM4_Init();
 	Usart3_TX_Init(115200);
 	DMA_USART3_Init();
+	TIM2_Init();
 
+
+	__enable_irq();
 
 	//테스트용
 	GPIO_pin_Mode(GPIOE, 15, 1);
   while (1)
   {
-	  motor_input(0);
-	  speed_rpm = get_motor_speed_rpm();
-	  printf("%.2f\n", speed_rpm);
+	  printf("%.2f, %.2f\n", time, speed_rad);
 	  delay_ms(10);
-	  gCount++;
   }
 
 }

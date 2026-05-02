@@ -1,2 +1,3 @@
-Core/Src/rcc.o: ../Core/Src/rcc.c ../Core/Inc/rcc.h
+Core/Src/rcc.o: ../Core/Src/rcc.c ../Core/Inc/rcc.h ../Core/Inc/system.h
 ../Core/Inc/rcc.h:
+../Core/Inc/system.h:
