@@ -33,7 +33,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/fonts.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pcd_ex.h \
  ../Core/Inc/gpwm.h ../Core/Inc/timer.h ../Core/Inc/apwm.h \
  ../Core/Inc/rcc.h ../Core/Inc/encoder.h ../Core/Inc/usart.h \
- ../Core/Inc/timer.h
+ ../Core/Inc/timer.h ../Core/Inc/DC_M_sim.h ../Core/Inc/rtwtypes.h \
+ ../Core/Inc/rtw_continuous.h ../Core/Inc/rtw_solver.h
 ../Core/Inc/fonts.h:
 ../Core/Inc/gpio.h:
 ../Core/Inc/rcc.h:
@@ -78,3 +79,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/fonts.h \
 ../Core/Inc/encoder.h:
 ../Core/Inc/usart.h:
 ../Core/Inc/timer.h:
+../Core/Inc/DC_M_sim.h:
+../Core/Inc/rtwtypes.h:
+../Core/Inc/rtw_continuous.h:
+../Core/Inc/rtw_solver.h:
