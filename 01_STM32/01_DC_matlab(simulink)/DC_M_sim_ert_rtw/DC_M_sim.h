@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'DC_M_sim'.
  *
- * Model version                  : 1.6
+ * Model version                  : 1.7
  * Simulink Coder version         : 8.10 (R2016a) 10-Feb-2016
- * C/C++ source code generated on : Tue May 05 17:46:16 2026
+ * C/C++ source code generated on : Tue May 05 21:06:19 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -55,16 +55,12 @@ typedef struct tag_RTM RT_MODEL;
 
 /* Block signals and states (auto storage) for system '<Root>' */
 typedef struct {
-  real_T theta;                        /* '<Root>/Integrator' */
-  real_T UnitDelay1;                   /* '<Root>/Unit Delay1' */
   real_T UnitDelay;                    /* '<Root>/Unit Delay' */
-  real_T Integrator;                   /* '<S2>/Integrator' */
-  real_T Saturation;                   /* '<Root>/Saturation' */
   real_T speed_rad;                    /* '<Root>/Transfer Fcn' */
-  real_T UnitDelay1_DSTATE;            /* '<Root>/Unit Delay1' */
   real_T UnitDelay_DSTATE;             /* '<Root>/Unit Delay' */
-  real_T Integrator_DSTATE;            /* '<S2>/Integrator' */
-  real_T UD_DSTATE;                    /* '<S3>/UD' */
+  struct {
+    void *AQHandles;
+  } HiddenToAsyncQueue_InsertedFor_;   /* synthesized block */
 } DW;
 
 /* Continuous states (auto storage) */
@@ -166,7 +162,25 @@ extern RT_MODEL *const rtM;
  *
  * Block '<Root>/Scope' : Unused code path elimination
  * Block '<Root>/Scope1' : Unused code path elimination
+ * Block '<S2>/Derivative Gain' : Unused code path elimination
  * Block '<S3>/DTDup' : Unused code path elimination
+ * Block '<S3>/Diff' : Unused code path elimination
+ * Block '<S3>/TSamp' : Unused code path elimination
+ * Block '<S3>/UD' : Unused code path elimination
+ * Block '<S2>/Integral Gain' : Unused code path elimination
+ * Block '<S2>/Integrator' : Unused code path elimination
+ * Block '<S2>/Proportional Gain' : Unused code path elimination
+ * Block '<S2>/Sum' : Unused code path elimination
+ * Block '<S1>/Discrete State-Space' : Unused code path elimination
+ * Block '<S1>/Gain' : Unused code path elimination
+ * Block '<S1>/Saturation' : Unused code path elimination
+ * Block '<S1>/Scope' : Unused code path elimination
+ * Block '<S1>/Scope1' : Unused code path elimination
+ * Block '<S1>/Scope2' : Unused code path elimination
+ * Block '<S1>/Step' : Unused code path elimination
+ * Block '<S1>/Sum' : Unused code path elimination
+ * Block '<S1>/Sum1' : Unused code path elimination
+ * Block '<Root>/Unit Delay1' : Unused code path elimination
  */
 
 /*-

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'DC_M_sim'.
  *
- * Model version                  : 1.6
+ * Model version                  : 1.7
  * Simulink Coder version         : 8.10 (R2016a) 10-Feb-2016
- * C/C++ source code generated on : Tue May 05 17:46:16 2026
+ * C/C++ source code generated on : Tue May 05 21:06:19 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex

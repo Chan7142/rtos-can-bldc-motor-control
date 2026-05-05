@@ -5,11 +5,11 @@
 #include "apwm.h"
 #include <stdint.h>
 #include <stdio.h>
+#include <Subsystem.h>
 #include "rcc.h"
 #include "encoder.h"
 #include "usart.h"
 #include "timer.h"
-#include "DC_M_sim.h"
 extern volatile uint32_t msTicks = 0;
 const uint32_t ENCODER_RESOLUTION = 1320;
 void SystemClock_Config_Max(void);
@@ -41,6 +41,7 @@ void motor_input(float input){
 	PWM_TIM1_CH2_Setduty(d2);
 }
 void get_motor_status(){
+	cnt_cur = Get_Encoder_Count();
 	int16_t delta_cnt = (int16_t)(cnt_cur - cnt_prev);
 		if (delta_cnt < -32768) {
 		    delta_cnt += 65536;
@@ -49,19 +50,19 @@ void get_motor_status(){
 		    delta_cnt -= 65536;
 		}
 		cnt_prev = cnt_cur;
-		speed_rad = (delta_cnt/ENCODER_RESOLUTION)* 2 * pi / Ts;
-		speed_rpm = speed_rad *pi / 30;
-		theta_rad += (delta_cnt/ENCODER_RESOLUTION) * 2 * pi;
-		theta_degree += (delta_cnt/ENCODER_RESOLUTION) * 360;
+		speed_rad = ((float)delta_cnt/(float)ENCODER_RESOLUTION)* 2 * pi / Ts;
+		speed_rpm = speed_rad *30 / pi;
+		theta_rad += ((float)delta_cnt/(float)ENCODER_RESOLUTION) * 2 * pi;
+		theta_degree += ((float)delta_cnt/(float)ENCODER_RESOLUTION) * 360;
 }
 void TIM2_IRQHandler(void) {
     if (TIM2->SR & (1<<0)) {
         TIM2->SR &= ~(1<<0);
         get_motor_status();
-        rtDW.UnitDelay1 = theta_rad;   // 위치 피드백 연결
-        rtDW.UnitDelay = speed_rad;    // 속도 피드백 연결
-        DC_M_sim_step();
-        motor_input((float)rtDW.Saturation);
+        rtU.theta = theta_rad;   // 위치 피드백 연결
+        rtU.speed_rad = speed_rad;    // 속도 피드백 연결
+        Subsystem_step();
+        motor_input((float)rtY.input);
        	gCount += Ts;
         time = gCount;
     }
@@ -93,7 +94,7 @@ int main(void)
 
 
 	__enable_irq();
-	DC_M_sim_initialize();
+	Subsystem_initialize();
   while (1)
   {
 	  printf("%.2f, %.2f\n", time, speed_rad);

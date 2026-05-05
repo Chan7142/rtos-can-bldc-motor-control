@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'DC_M_sim'.
  *
- * Model version                  : 1.6
+ * Model version                  : 1.7
  * Simulink Coder version         : 8.10 (R2016a) 10-Feb-2016
- * C/C++ source code generated on : Tue May 05 17:46:16 2026
+ * C/C++ source code generated on : Tue May 05 21:06:19 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -131,10 +131,6 @@ static void rt_ertODEUpdateContinuousStates(RTWSolverInfo *si )
 /* Model step function */
 void DC_M_sim_step(void)
 {
-  /* local block i/o variables */
-  real_T rtb_TSamp;
-  real_T Sum;
-  int32_T tmp;
   if (rtmIsMajorTimeStep(rtM)) {
     /* set solver stop time */
     rtsiSetSolverStopTime(&rtM->solverInfo,((rtM->Timing.clockTick0+1)*
@@ -146,62 +142,9 @@ void DC_M_sim_step(void)
     rtM->Timing.t[0] = rtsiGetT(&rtM->solverInfo);
   }
 
-  /* Integrator: '<Root>/Integrator' */
-  rtDW.theta = rtX.Integrator_CSTATE;
   if (rtmIsMajorTimeStep(rtM)) {
-    /* UnitDelay: '<Root>/Unit Delay1' */
-    rtDW.UnitDelay1 = rtDW.UnitDelay1_DSTATE;
-
     /* UnitDelay: '<Root>/Unit Delay' */
     rtDW.UnitDelay = rtDW.UnitDelay_DSTATE;
-  }
-
-  /* Step: '<S1>/Step' */
-  if (rtM->Timing.t[0] < 3.0) {
-    tmp = 0;
-  } else {
-    tmp = 6;
-  }
-
-  /* End of Step: '<S1>/Step' */
-
-  /* Sum: '<S1>/Sum' incorporates:
-   *  Gain: '<S1>/Gain'
-   *  Sum: '<S1>/Sum1'
-   */
-  Sum = ((real_T)tmp - rtDW.UnitDelay1) * 5.0 - rtDW.UnitDelay;
-  if (rtmIsMajorTimeStep(rtM)) {
-    /* DiscreteIntegrator: '<S2>/Integrator' incorporates:
-     *  Gain: '<S2>/Integral Gain'
-     */
-    rtDW.Integrator = 20.384866275277236 * Sum * 0.001 + rtDW.Integrator_DSTATE;
-
-    /* SampleTimeMath: '<S3>/TSamp' incorporates:
-     *  Gain: '<S2>/Derivative Gain'
-     *
-     * About '<S3>/TSamp':
-     *  y = u * K where K = 1 / ( w * Ts )
-     */
-    rtb_TSamp = 0.0 * Sum * 1000.0;
-
-    /* Sum: '<S2>/Sum' incorporates:
-     *  Delay: '<S3>/UD'
-     *  Gain: '<S2>/Proportional Gain'
-     *  Sum: '<S3>/Diff'
-     */
-    Sum = (2.8579582517938684 * Sum + rtDW.Integrator) + (rtb_TSamp -
-      rtDW.UD_DSTATE);
-
-    /* Saturate: '<Root>/Saturation' */
-    if (Sum > 12.0) {
-      rtDW.Saturation = 12.0;
-    } else if (Sum < -12.0) {
-      rtDW.Saturation = -12.0;
-    } else {
-      rtDW.Saturation = Sum;
-    }
-
-    /* End of Saturate: '<Root>/Saturation' */
   }
 
   /* TransferFcn: '<Root>/Transfer Fcn' */
@@ -209,17 +152,8 @@ void DC_M_sim_step(void)
   rtDW.speed_rad += 17.495007132667617 * rtX.TransferFcn_CSTATE;
   if (rtmIsMajorTimeStep(rtM)) {
     if (rtmIsMajorTimeStep(rtM)) {
-      /* Update for UnitDelay: '<Root>/Unit Delay1' */
-      rtDW.UnitDelay1_DSTATE = rtDW.theta;
-
       /* Update for UnitDelay: '<Root>/Unit Delay' */
       rtDW.UnitDelay_DSTATE = rtDW.speed_rad;
-
-      /* Update for DiscreteIntegrator: '<S2>/Integrator' */
-      rtDW.Integrator_DSTATE = rtDW.Integrator;
-
-      /* Update for Delay: '<S3>/UD' */
-      rtDW.UD_DSTATE = rtb_TSamp;
     }
   }                                    /* end MajorTimeStep */
 
@@ -259,7 +193,6 @@ void DC_M_sim_derivatives(void)
   /* Derivatives for TransferFcn: '<Root>/Transfer Fcn' */
   _rtXdot->TransferFcn_CSTATE = 0.0;
   _rtXdot->TransferFcn_CSTATE += -7.132667617689016 * rtX.TransferFcn_CSTATE;
-  _rtXdot->TransferFcn_CSTATE += rtDW.Saturation;
 }
 
 /* Model initialize function */

@@ -1,4 +1,4 @@
-"./Core/Src/DC_M_sim.o"
+"./Core/Src/Subsystem.o"
 "./Core/Src/apwm.o"
 "./Core/Src/dma.o"
 "./Core/Src/encoder.o"

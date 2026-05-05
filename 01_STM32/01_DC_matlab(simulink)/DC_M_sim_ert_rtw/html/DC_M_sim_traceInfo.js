@@ -1,45 +1,55 @@
 function RTW_Sid2UrlHash() {
 	this.urlHashMap = new Array();
 	/* <Root>/Integrator */
-	this.urlHashMap["DC_M_sim:5"] = "DC_M_sim.c:149,256,299&DC_M_sim.h:58,72,78,84";
+	this.urlHashMap["DC_M_sim:5"] = "DC_M_sim.c:190,232&DC_M_sim.h:68,74,80";
 	/* <Root>/Saturation */
-	this.urlHashMap["DC_M_sim:12"] = "DC_M_sim.c:195,204&DC_M_sim.h:62";
+	this.urlHashMap["DC_M_sim:12"] = "msg=rtwMsg_CodeGenerationReducedBlock&block=DC_M_sim:12";
 	/* <Root>/Scope */
 	this.urlHashMap["DC_M_sim:2"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:2";
 	/* <Root>/Scope1 */
 	this.urlHashMap["DC_M_sim:4"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:4";
 	/* <Root>/Transfer Fcn */
-	this.urlHashMap["DC_M_sim:1"] = "DC_M_sim.c:207,259,302&DC_M_sim.h:63,73,79,85";
+	this.urlHashMap["DC_M_sim:1"] = "DC_M_sim.c:150,193,235&DC_M_sim.h:59,69,75,81";
 	/* <Root>/Unit Delay */
-	this.urlHashMap["DC_M_sim:19"] = "DC_M_sim.c:155,215&DC_M_sim.h:60,65";
+	this.urlHashMap["DC_M_sim:19"] = "DC_M_sim.c:146,155&DC_M_sim.h:58,60";
 	/* <Root>/Unit Delay1 */
-	this.urlHashMap["DC_M_sim:20"] = "DC_M_sim.c:152,212&DC_M_sim.h:59,64";
+	this.urlHashMap["DC_M_sim:20"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:20";
+	/* <S1>/Discrete State-Space */
+	this.urlHashMap["DC_M_sim:21"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:21";
 	/* <S1>/Gain */
-	this.urlHashMap["DC_M_sim:10"] = "DC_M_sim.c:169";
+	this.urlHashMap["DC_M_sim:10"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:10";
+	/* <S1>/Saturation */
+	this.urlHashMap["DC_M_sim:27"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:27";
+	/* <S1>/Scope */
+	this.urlHashMap["DC_M_sim:23"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:23";
+	/* <S1>/Scope1 */
+	this.urlHashMap["DC_M_sim:25"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:25";
+	/* <S1>/Scope2 */
+	this.urlHashMap["DC_M_sim:26"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:26";
 	/* <S1>/Step */
-	this.urlHashMap["DC_M_sim:11"] = "DC_M_sim.c:159,166";
+	this.urlHashMap["DC_M_sim:11"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:11";
 	/* <S1>/Sum */
-	this.urlHashMap["DC_M_sim:8"] = "DC_M_sim.c:168";
+	this.urlHashMap["DC_M_sim:8"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:8";
 	/* <S1>/Sum1 */
-	this.urlHashMap["DC_M_sim:9"] = "DC_M_sim.c:170";
+	this.urlHashMap["DC_M_sim:9"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:9";
 	/* <S2>/Derivative Gain */
-	this.urlHashMap["DC_M_sim:7:1666"] = "DC_M_sim.c:180";
+	this.urlHashMap["DC_M_sim:7:1666"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:7:1666";
 	/* <S2>/Integral Gain */
-	this.urlHashMap["DC_M_sim:7:1665"] = "DC_M_sim.c:175";
+	this.urlHashMap["DC_M_sim:7:1665"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:7:1665";
 	/* <S2>/Integrator */
-	this.urlHashMap["DC_M_sim:7:1667"] = "DC_M_sim.c:174,218&DC_M_sim.h:61,66";
+	this.urlHashMap["DC_M_sim:7:1667"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:7:1667";
 	/* <S2>/Proportional Gain */
-	this.urlHashMap["DC_M_sim:7:1664"] = "DC_M_sim.c:189";
+	this.urlHashMap["DC_M_sim:7:1664"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:7:1664";
 	/* <S2>/Sum */
-	this.urlHashMap["DC_M_sim:7:1663"] = "DC_M_sim.c:187";
+	this.urlHashMap["DC_M_sim:7:1663"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:7:1663";
 	/* <S3>/DTDup */
 	this.urlHashMap["DC_M_sim:7:1673"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:7:1673";
 	/* <S3>/Diff */
-	this.urlHashMap["DC_M_sim:7:1672"] = "DC_M_sim.c:190";
+	this.urlHashMap["DC_M_sim:7:1672"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:7:1672";
 	/* <S3>/TSamp */
-	this.urlHashMap["DC_M_sim:7:1670"] = "DC_M_sim.c:179,182";
+	this.urlHashMap["DC_M_sim:7:1670"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:7:1670";
 	/* <S3>/UD */
-	this.urlHashMap["DC_M_sim:7:1671"] = "DC_M_sim.c:188,221&DC_M_sim.h:67";
+	this.urlHashMap["DC_M_sim:7:1671"] = "msg=rtwMsg_reducedBlock&block=DC_M_sim:7:1671";
 	this.getUrlHash = function(sid) { return this.urlHashMap[sid];}
 }
 RTW_Sid2UrlHash.instance = new RTW_Sid2UrlHash();
@@ -74,18 +84,32 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["DC_M_sim:14"] = {rtwname: "<S1>/theta"};
 	this.rtwnameHashMap["<S1>/speed_rad"] = {sid: "DC_M_sim:16"};
 	this.sidHashMap["DC_M_sim:16"] = {rtwname: "<S1>/speed_rad"};
+	this.rtwnameHashMap["<S1>/Demux"] = {sid: "DC_M_sim:24"};
+	this.sidHashMap["DC_M_sim:24"] = {rtwname: "<S1>/Demux"};
 	this.rtwnameHashMap["<S1>/Discrete PID Controller"] = {sid: "DC_M_sim:7"};
 	this.sidHashMap["DC_M_sim:7"] = {rtwname: "<S1>/Discrete PID Controller"};
+	this.rtwnameHashMap["<S1>/Discrete State-Space"] = {sid: "DC_M_sim:21"};
+	this.sidHashMap["DC_M_sim:21"] = {rtwname: "<S1>/Discrete State-Space"};
 	this.rtwnameHashMap["<S1>/Gain"] = {sid: "DC_M_sim:10"};
 	this.sidHashMap["DC_M_sim:10"] = {rtwname: "<S1>/Gain"};
+	this.rtwnameHashMap["<S1>/Mux"] = {sid: "DC_M_sim:22"};
+	this.sidHashMap["DC_M_sim:22"] = {rtwname: "<S1>/Mux"};
+	this.rtwnameHashMap["<S1>/Saturation"] = {sid: "DC_M_sim:27"};
+	this.sidHashMap["DC_M_sim:27"] = {rtwname: "<S1>/Saturation"};
+	this.rtwnameHashMap["<S1>/Scope"] = {sid: "DC_M_sim:23"};
+	this.sidHashMap["DC_M_sim:23"] = {rtwname: "<S1>/Scope"};
+	this.rtwnameHashMap["<S1>/Scope1"] = {sid: "DC_M_sim:25"};
+	this.sidHashMap["DC_M_sim:25"] = {rtwname: "<S1>/Scope1"};
+	this.rtwnameHashMap["<S1>/Scope2"] = {sid: "DC_M_sim:26"};
+	this.sidHashMap["DC_M_sim:26"] = {rtwname: "<S1>/Scope2"};
 	this.rtwnameHashMap["<S1>/Step"] = {sid: "DC_M_sim:11"};
 	this.sidHashMap["DC_M_sim:11"] = {rtwname: "<S1>/Step"};
 	this.rtwnameHashMap["<S1>/Sum"] = {sid: "DC_M_sim:8"};
 	this.sidHashMap["DC_M_sim:8"] = {rtwname: "<S1>/Sum"};
 	this.rtwnameHashMap["<S1>/Sum1"] = {sid: "DC_M_sim:9"};
 	this.sidHashMap["DC_M_sim:9"] = {rtwname: "<S1>/Sum1"};
-	this.rtwnameHashMap["<S1>/Out1"] = {sid: "DC_M_sim:15"};
-	this.sidHashMap["DC_M_sim:15"] = {rtwname: "<S1>/Out1"};
+	this.rtwnameHashMap["<S1>/input"] = {sid: "DC_M_sim:28"};
+	this.sidHashMap["DC_M_sim:28"] = {rtwname: "<S1>/input"};
 	this.rtwnameHashMap["<S2>/u"] = {sid: "DC_M_sim:7:1"};
 	this.sidHashMap["DC_M_sim:7:1"] = {rtwname: "<S2>/u"};
 	this.rtwnameHashMap["<S2>/Derivative Gain"] = {sid: "DC_M_sim:7:1666"};
