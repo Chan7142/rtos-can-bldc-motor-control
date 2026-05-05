@@ -4,6 +4,7 @@
 
 ## 📌 Project Overview
 모터 제어 시스템의 응답 속도 최적화와 MCU 내부 구조의 깊이 있는 이해를 위해 모든 드라이버를 직접 설계했습니다. 현재 DC 모터의 물리적 특성을 파악하기 위한 **시스템 식별(System Identification)** 단계를 진행 중입니다.
+FreeRTOS 기반 RTOS 아키텍처로 이관하고, CAN 지령 기반 BLDC FOC(Field-Oriented Control)까지 확장할 계획입니다.
 
 ## 🛠 Core Tech Stack
 - **Hardware**: STM32F767ZI (Cortex-M7)
