@@ -1,3 +1,4 @@
+/* USER CODE BEGIN 1 */
 #include "fonts.h"
 #include "main.h"
 #include "string.h"
@@ -67,8 +68,10 @@ void TIM2_IRQHandler(void) {
         time = gCount;
     }
 }
+/* USER CODE END 1 */
 int main(void)
 {
+	/* USER CODE BEGIN 1 */
 	msTicks = 0;
 	__asm__("CPSIE i");
 	SystemClock_Config_Max();
@@ -95,13 +98,16 @@ int main(void)
 
 	__enable_irq();
 	Subsystem_initialize();
+	/* USER CODE END 1 */
   while (1)
   {
+	  /* USER CODE BEGIN 1 */
 	  printf("%.2f, %.2f\n", time, speed_rad);
 	  sprintf(buf, "RPM: %5d", (int)speed_rpm);
 	  ST7735_WriteString(10, 50, buf, Font_7x10, 0xFFFF, 0x0000);
 	  delay_ms(10);
+	  /* USER CODE END 1 */
   }
 
 }
-
+/* USER CODE END 1 */
