@@ -111,27 +111,7 @@ void Error_Handler(void);
 #define LD2_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
-/* Base Addresses */
-#define RCC_BASE_ADDR   0x40023800UL
-#define PWR_BASE_ADDR   0x40023C00UL
-#define FLASH_BASE_ADDR 0x40023C00UL // FLASH Interface 주소
 
-/* RCC Registers */
-#define RCC_CR_OFFSET         0x00UL
-#define RCC_PLLCFGR_OFFSET    0x04UL
-#define RCC_CFGR_OFFSET       0x08UL
-#define RCC_APB1ENR_OFFSET    0x40UL
-
-/* PWR Registers */
-#define PWR_CR1_OFFSET        0x00UL
-#define PWR_CSR1_OFFSET       0x04UL
-
-/* FLASH Registers */
-#define FLASH_ACR_OFFSET      0x00UL
-
-/* 포인터 역참조 매크로 */
-#define REG_WRITE(addr, val)  (*(volatile uint32_t *)(addr) = (val))
-#define REG_READ(addr)        (*(volatile uint32_t *)(addr))
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

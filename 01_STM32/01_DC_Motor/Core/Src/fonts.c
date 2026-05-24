@@ -2,6 +2,7 @@
 #include "fonts.h"
 #include "spi.h"
 #include "gpio.h"
+#include "stm32f7xx_hal.h"
 
 void ST7735_SetAddressWindow(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
 void ST7735_FillScreen(uint16_t color);
@@ -314,11 +315,36 @@ FontDef Font_11x18 = {11,18,Font11x18};
 FontDef Font_16x26 = {16,26,Font16x26};
 
 void ST7735_Init() {
-	GPIO_Clock_Enable(GPIOF);
-	GPIO_pin_Mode(GPIOF, 12, 1); //A0
-	GPIO_Speed_Set(GPIOF, 12, 3);
-	GPIO_pin_Mode(GPIOF, 13, 1); // RESET
-	GPIO_Speed_Set(GPIOF, 13, 3);
+	/* GPIOF 포트의 12번 핀(A0)을 고속 출력 모드로 설정하는 코드 */
+
+	// 1. [GPIO_Clock_Enable 대응] GPIOF 포트의 하드웨어 클럭을 활성화합니다.
+	__HAL_RCC_GPIOF_CLK_ENABLE();
+
+	// 2. GPIO 설정을 위한 구조체 변수 선언
+	GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+	// 3. 제어할 핀 번호 지정 (12번 핀)
+	GPIO_InitStruct.Pin = GPIO_PIN_12;
+
+	// 4. [GPIO_pin_Mode 대응] 핀을 일반 출력(Push-Pull) 모드로 설정
+	// (기존 코드의 '1'이 일반 출력 모드를 뜻합니다)
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+
+	// 5. 핀에 풀업/풀다운 저항을 사용하지 않음 (기본값)
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+
+	// 6. [GPIO_Speed_Set 대응] 핀의 출력 속도를 Very High(최고속)로 설정
+	// (기존 코드의 '3'이 하드웨어 레지스터 상 최고 속도 비트와 매칭됩니다)
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+
+	// 7. GPIOF 포트에 설정값을 최종 주입하여 레지스터를 깎습니다.
+	HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+	// A0(12번)와 RESET(13번)을 한 번에 묶어서 세팅하기
+	GPIO_InitStruct.Pin = GPIO_PIN_12 | GPIO_PIN_13;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
     ST7735_HW_Reset(); // 이전에 만든 리셋 함수 호출
 
     ST7735_WriteCommand(0x01); // Software Reset
@@ -416,15 +442,24 @@ void ST7735_DrawChar(uint16_t x, uint16_t y, char ch, FontDef font, uint16_t col
         }
     }
 }
-void A0_pin_set(){
-	GPIO_Write_Pin(GPIOF, 12, 1);
+/* LCD 제어 등에 사용되는 A0(Data/Command) 및 RESET 핀 제어 함수 */
+
+void A0_pin_set(void){
+    // GPIOF 포트의 12번 핀에 하이(1) 신호 출력
+    HAL_GPIO_WritePin(GPIOF, GPIO_PIN_12, GPIO_PIN_SET);
 }
-void A0_pin_reset(){
-	GPIO_Write_Pin(GPIOF, 12, 0);
+
+void A0_pin_reset(void){
+    // GPIOF 포트의 12번 핀에 로우(0) 신호 출력
+    HAL_GPIO_WritePin(GPIOF, GPIO_PIN_12, GPIO_PIN_RESET);
 }
-void RESET_pin_set(){
-	GPIO_Write_Pin(GPIOF, 13, 1);
+
+void RESET_pin_set(void){
+    // GPIOF 포트의 13번 핀에 하이(1) 신호 출력
+    HAL_GPIO_WritePin(GPIOF, GPIO_PIN_13, GPIO_PIN_SET);
 }
-void RESET_pin_reset(){
-	GPIO_Write_Pin(GPIOF, 13, 0);
+
+void RESET_pin_reset(void){
+    // GPIOF 포트의 13번 핀에 로우(0) 신호 출력
+    HAL_GPIO_WritePin(GPIOF, GPIO_PIN_13, GPIO_PIN_RESET);
 }

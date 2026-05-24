@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include "gpio.h"
 #include "spi.h"
+#include "dwt.h"
 
 
 typedef struct {

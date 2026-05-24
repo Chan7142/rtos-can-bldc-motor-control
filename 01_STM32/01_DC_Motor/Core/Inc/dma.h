@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include "spi.h"
-#include "rcc.h"
+#include "stm32f767xx.h"
 #include "usart.h"
 
 

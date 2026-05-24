@@ -1,5 +1,5 @@
 #include "usart.h"
-#include "rcc.h"
+#include "stm32f7xx_hal.h"
 #include "gpio.h"
 #include "dma.h"
 #include <stdio.h>
@@ -14,7 +14,8 @@ void Usart3_TX_Init(uint32_t baudrate){
 	GPIOD->MODER &= ~((3 << 16) | (3 << 18)); // PD8 PD9
 	GPIOD->MODER |=  ((2 << 16) | (2 << 18)); // AF 모드
 
-	GPIOD->AFRH |= (7 << 0) | (7 << 4);
+	// AFR[1] 구조체 멤버가 기존의 AFRH(상위 대체기능 레지스터) 역할을 수행합니다.
+	GPIOD->AFR[1] |= (7 << 0) | (7 << 4);
 
 	//baud rate 설정
 	uint32_t brr_val;

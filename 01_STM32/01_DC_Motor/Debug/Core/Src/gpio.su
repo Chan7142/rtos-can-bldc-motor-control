@@ -1,5 +1,0 @@
-../Core/Src/gpio.c:3:6:GPIO_pin_Mode	16	static
-../Core/Src/gpio.c:8:6:GPIO_Write_Pin	16	static
-../Core/Src/gpio.c:13:9:GPIO_Read_Pin	16	static
-../Core/Src/gpio.c:16:6:GPIO_Clock_Enable	24	static
-../Core/Src/gpio.c:33:6:GPIO_Speed_Set	16	static

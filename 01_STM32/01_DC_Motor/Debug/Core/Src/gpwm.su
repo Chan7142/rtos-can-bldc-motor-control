@@ -1,2 +1,2 @@
-../Core/Src/gpwm.c:5:6:PWM_TIM5_CH1_Init	16	static
-../Core/Src/gpwm.c:32:6:PWM_TIM5_CH1_Setduty	16	static
+../Core/Src/gpwm.c:6:6:PWM_TIM5_CH1_Init	16	static
+../Core/Src/gpwm.c:33:6:PWM_TIM5_CH1_Setduty	16	static

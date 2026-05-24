@@ -1,5 +1,6 @@
 #include <gpwm.h>
 #include "gpio.h"
+#include "stm32f7xx_it.h"
 
 //PA0
 void PWM_TIM5_CH1_Init(uint32_t freq){
@@ -9,8 +10,8 @@ void PWM_TIM5_CH1_Init(uint32_t freq){
 	GPIOA->MODER &= ~(3<<(0*2));
 	GPIOA->MODER |= (2<<(0*2));
 
-	GPIOA->AFRL &= ~(0xF<<(0*4));
-	GPIOA->AFRL |=  (0x02 << (0 * 4));
+	GPIOA->AFR[0] &= ~(0xF << (0 * 4));  // PA0 핀의 AF 설정 구역 초기화
+	GPIOA->AFR[0] |=  (0x02 << (0 * 4)); // PA0 핀에 AF2 주입
 	GPIOA->OSPEEDR |= (3<<(0*2));
 
 	TIM5->PSC = 0; //분주비0 108Mhz

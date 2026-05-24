@@ -1,11 +1,11 @@
-Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/fonts.h \
- ../Core/Inc/gpio.h ../Core/Inc/rcc.h ../Core/Inc/spi.h ../Core/Inc/dma.h \
- ../Core/Inc/usart.h ../Core/Inc/main.h \
+Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h \
  ../Core/Inc/stm32f7xx_hal_conf.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_def.h \
  ../Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f7xx.h \
+ ../Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f767xx.h \
+ ../Core/Inc/gpio.h \
  ../Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f767xx.h \
  ../Drivers/CMSIS/Include/core_cm7.h \
  ../Drivers/CMSIS/Include/cmsis_version.h \
@@ -31,22 +31,31 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/fonts.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pcd.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_ll_usb.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pcd_ex.h \
- ../Core/Inc/gpwm.h ../Core/Inc/timer.h ../Core/Inc/apwm.h \
- ../Core/Inc/Subsystem.h ../Core/Inc/rtwtypes.h \
- ../Core/Inc/rtw_continuous.h ../Core/Inc/rtw_solver.h ../Core/Inc/rcc.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h \
+ ../Core/Inc/FreeRTOSConfig.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h \
+ ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h \
+ ../Core/Inc/fonts.h ../Core/Inc/gpio.h ../Core/Inc/spi.h \
+ ../Core/Inc/dma.h ../Core/Inc/usart.h ../Core/Inc/dwt.h \
+ ../Core/Inc/gpwm.h ../Core/Inc/apwm.h ../Core/Inc/Subsystem.h \
+ ../Core/Inc/rtwtypes.h ../Core/Inc/rtw_continuous.h \
+ ../Core/Inc/rtw_solver.h ../Core/Inc/stm32f7xx_it.h \
  ../Core/Inc/encoder.h ../Core/Inc/usart.h ../Core/Inc/timer.h
-../Core/Inc/fonts.h:
-../Core/Inc/gpio.h:
-../Core/Inc/rcc.h:
-../Core/Inc/spi.h:
-../Core/Inc/dma.h:
-../Core/Inc/usart.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h:
 ../Core/Inc/stm32f7xx_hal_conf.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_def.h:
 ../Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f7xx.h:
+../Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f767xx.h:
+../Core/Inc/gpio.h:
 ../Drivers/CMSIS/Device/ST/STM32F7xx/Include/stm32f767xx.h:
 ../Drivers/CMSIS/Include/core_cm7.h:
 ../Drivers/CMSIS/Include/cmsis_version.h:
@@ -72,14 +81,30 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/fonts.h \
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pcd.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_ll_usb.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pcd_ex.h:
+../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h:
+../Core/Inc/FreeRTOSConfig.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/projdefs.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/portable.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/deprecated_definitions.h:
+../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM7/r0p1/portmacro.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/mpu_wrappers.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/task.h:
+../Middlewares/Third_Party/FreeRTOS/Source/include/list.h:
+../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.h:
+../Core/Inc/fonts.h:
+../Core/Inc/gpio.h:
+../Core/Inc/spi.h:
+../Core/Inc/dma.h:
+../Core/Inc/usart.h:
+../Core/Inc/dwt.h:
 ../Core/Inc/gpwm.h:
-../Core/Inc/timer.h:
 ../Core/Inc/apwm.h:
 ../Core/Inc/Subsystem.h:
 ../Core/Inc/rtwtypes.h:
 ../Core/Inc/rtw_continuous.h:
 ../Core/Inc/rtw_solver.h:
-../Core/Inc/rcc.h:
+../Core/Inc/stm32f7xx_it.h:
 ../Core/Inc/encoder.h:
 ../Core/Inc/usart.h:
 ../Core/Inc/timer.h:

@@ -2,7 +2,7 @@
 #define GPWM_H
 #include <stdint.h>
 #include "gpio.h"
-#include "timer.h"
+#include "stm32f767xx.h"
 
 
 void PWM_TIM5_CH1_Init(uint32_t freq);

@@ -1,4 +1,5 @@
 #include "spi.h"
+#include "stm32f7xx_hal.h"
 
 void DMA2_config_SPI1_TX(uint32_t buffer_addr, uint32_t size){
     /* 1. 클럭 활성화 */
@@ -62,31 +63,53 @@ void SPI1_WriteByte_Polling(uint8_t data) {
     while (SPI1->SR & (1 << 7));   // BSY 대기 **오류 원인**
 }
 
-void CS_ON(){
-	GPIO_Write_Pin(GPIOD, 14, 0);
-}
-void CS_OFF(){
-	GPIO_Write_Pin(GPIOD, 14, 1);
+void CS_ON(void){
+    // GPIOD 포트의 14번 핀에 로우(0) 신호를 주어 슬레이브 칩을 활성화(선택)합니다.
+    HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_RESET);
 }
 
-void SPI_GPIO_Init(){
-	GPIO_Clock_Enable(GPIOD);
-	GPIO_pin_Mode(GPIOD, 14, 1);
-	GPIO_Speed_Set(GPIOD, 14, 3);
-	GPIO_Clock_Enable(GPIOA);
-	GPIO_Clock_Enable(GPIOF);
-	GPIO_pin_Mode(GPIOF, 13, 1);
-	GPIO_Speed_Set(GPIOF, 13, 3);
+void CS_OFF(void){
+    // GPIOD 포트의 14번 핀에 하이(1) 신호를 주어 슬레이브 칩을 비활성화(해제)합니다.
+    HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_SET);
+}
 
-	GPIO_pin_Mode(GPIOA, 5, 2); // PA5 -> AF Mode
-	GPIO_pin_Mode(GPIOA, 7, 2); // PA7 -> AF M
-	GPIO_Speed_Set(GPIOA, 5, 3);
-	GPIO_Speed_Set(GPIOA, 7, 3);
+void SPI_GPIO_Init(void) {
+    // 1. 사용할 모든 GPIO 포트(GPIOA, GPIOD, GPIOF)의 클럭 활성화
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOD_CLK_ENABLE();
+    __HAL_RCC_GPIOF_CLK_ENABLE();
 
-	GPIOA->AFRL &= ~(0xF << (5 * 4)); // 초기화
-	GPIOA->AFRL |=  (0x5 << (5 * 4)); // AF5(SPI1) 주입
-	GPIOA->AFRL &= ~(0xF << (7 * 4)); // 초기화
-	GPIOA->AFRL |=  (0x5 << (7 * 4)); // AF5(SPI1) 주입
+    // 2. GPIO 초기화 설정을 위한 구조체 변수 선언 (단 한 번만 선언해서 재사용)
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+    // ====================================================================
+    // [단독 설정 1] GPIOD - 14번 핀 (CS 핀: 일반 출력 모드)
+    // ====================================================================
+    GPIO_InitStruct.Pin = GPIO_PIN_14;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;       // 일반 출력(Push-Pull)
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH; // 최고속 설정
+    HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+
+    // ====================================================================
+    // [단독 설정 2] GPIOF - 12번, 13번 핀 (A0 / RESET 핀: 일반 출력 모드)
+    // ====================================================================
+    // (12번 핀과 13번 핀 모두 출력 모드로 같으므로 비트 기호 '|' 로 묶어서 한 번에 세팅합니다)
+    GPIO_InitStruct.Pin = GPIO_PIN_12 | GPIO_PIN_13;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;       // 일반 출력(Push-Pull)
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH; // 최고속 설정
+    HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+
+    // ====================================================================
+    // [단독 설정 3] GPIOA - 5번, 7번 핀 (SPI1 SCK / MOSI 핀: 대체 기능 모드)
+    // ====================================================================
+    GPIO_InitStruct.Pin = GPIO_PIN_5 | GPIO_PIN_7;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;           // 대체 기능(Alternate Function) 푸시풀
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH; // 고속 SPI 통신을 위한 최고속 설정
+    GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;        // 두 핀의 기능을 AF5(SPI1)로 지정
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 }
 
 

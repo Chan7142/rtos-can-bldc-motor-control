@@ -1,4 +1,5 @@
 #include "encoder.h"
+#include "stm32f7xx_hal.h"
 
 
 //PD12 PD13
@@ -10,8 +11,26 @@ void Encoder_TIM4_Init(void) {
     // 2. GPIO 설정 (PD12, PD13 -> AF2)
     GPIOD->MODER   &= ~((3 << 24) | (3 << 26));
     GPIOD->MODER   |=  ((2 << 24) | (2 << 26)); // Alternate Function
-    GPIOD->AFRH  &= ~((0xF << 16) | (0xF << 20));
-    GPIOD->AFRH  |=  ((2 << 16) | (2 << 20));   // AF2 (TIM4)
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+    // 2. PD12, PD13 핀 지정
+    GPIO_InitStruct.Pin = GPIO_PIN_12 | GPIO_PIN_13;
+
+    // 3. 모드를 Alternate Function(대체 기능) 푸시풀로 설정
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+
+    // 4. 풀업/풀다운은 끈 상태 유지 (레지스터 기본값)
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+
+    // 5. 핀 출력 속도 설정 (엔코더 신호를 받아야 하므로 High 속도 추천)
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+
+    // 6. [★질문하신 AFRH 레지스터 대응 핵심 코드★]
+    // 두 핀의 대체 기능을 AF2(TIM4)로 지정합니다.
+    GPIO_InitStruct.Alternate = GPIO_AF2_TIM4;
+
+    // 7. GPIOD 포트에 위 설정값들을 최종 주입 (내부에서 AFRH 비트 연산이 자동 수행됨)
+    HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
     // 3. 엔코더 모드 설정
     TIM4->PSC = 0;              // 프리스케일러는 0 (엔코더 신호 그대로 카운트)
