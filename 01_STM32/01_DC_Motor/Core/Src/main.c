@@ -32,6 +32,7 @@
 #include "encoder.h"
 #include "usart.h"
 #include "timer.h"
+#include "can.h"
 extern volatile uint32_t msTicks = 0;
 const uint32_t ENCODER_RESOLUTION = 1320;
 void SystemClock_Config_Max(void);
@@ -48,6 +49,7 @@ float speed_rad = 0;
 float speed_rpm = 0;
 float theta_rad = 0;
 float theta_degree = 0;
+float desired_theta = 0;
 float Ts = 0.001;
 char buf[32];
 uint32_t debug1 = 0;
@@ -213,6 +215,8 @@ int main(void)
 	DMA_USART3_Init();
 	TIM2_Init();
 	Subsystem_initialize();
+	Can1_Init();
+	Can1_Filter_Config();
 /* USER CODE END RTOS_EVENTS */
 /* Start scheduler */
 
@@ -587,6 +591,9 @@ void CAN_T(void *argument)
   /* Infinite loop */
   for(;;)
   {
+	  desired_theta = Can1_Receive_Handler(desired_theta) * pi / 180;
+	  rtU.ref = desired_theta;
+	  Can1_Send_MotorStatus(theta_degree, speed_rpm);
     osDelay(1);
   }
   /* USER CODE END CAN_T */

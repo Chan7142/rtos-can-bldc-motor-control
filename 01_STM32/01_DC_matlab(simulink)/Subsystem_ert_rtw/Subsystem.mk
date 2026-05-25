@@ -2,7 +2,7 @@
 ## Makefile generated for Simulink model 'Subsystem'. 
 ## 
 ## Makefile     : Subsystem.mk
-## Generated on : Tue May 05 20:50:52 2026
+## Generated on : Mon May 25 15:54:11 2026
 ## MATLAB Coder version: 3.1 (R2016a)
 ## 
 ## Build Info:
@@ -169,10 +169,10 @@ INCLUDES = $(INCLUDES_BUILDINFO)
 ###########################################################################
 
 DEFINES_BUILD_ARGS = -DONESTEPFCN=1 -DTERMFCN=0 -DMAT_FILE=0 -DMULTI_INSTANCE_CODE=0 -DINTEGER_CODE=0 -DMT=0 -DCLASSIC_INTERFACE=0 -DALLOCATIONFCN=0
-DEFINES_OPTS = -DTID01EQ=1
-DEFINES_STANDARD = -DMODEL=Subsystem -DNUMST=2 -DNCSTATES=0 -DHAVESTDIO
+DEFINES_IMPLIED = -DTID01EQ=0
+DEFINES_STANDARD = -DMODEL=Subsystem -DNUMST=1 -DNCSTATES=0 -DHAVESTDIO
 
-DEFINES = $(DEFINES_BUILD_ARGS) $(DEFINES_OPTS) $(DEFINES_STANDARD)
+DEFINES = $(DEFINES_BUILD_ARGS) $(DEFINES_IMPLIED) $(DEFINES_STANDARD)
 
 ###########################################################################
 ## SOURCE FILES

@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Subsystem'.
  *
- * Model version                  : 1.7
+ * Model version                  : 1.9
  * Simulink Coder version         : 8.10 (R2016a) 10-Feb-2016
- * C/C++ source code generated on : Tue May 05 21:06:41 2026
+ * C/C++ source code generated on : Mon May 25 15:53:58 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -34,18 +34,12 @@
 # define rtmSetErrorStatus(rtm, val)   ((rtm)->errorStatus = (val))
 #endif
 
-#ifndef rtmGetT
-# define rtmGetT(rtm)                  (rtmGetTPtr((rtm))[0])
-#endif
-
 /* Forward declaration for rtModel */
 typedef struct tag_RTM RT_MODEL;
 
 /* Block signals and states (auto storage) for system '<Root>' */
 typedef struct {
-  real_T DiscreteStateSpace[3];        /* '<S1>/Discrete State-Space' */
   real_T Observer[3];                  /* '<S1>/Discrete State-Space' */
-  real_T Integrator;                   /* '<S2>/Integrator' */
   real_T Integrator_DSTATE;            /* '<S2>/Integrator' */
   real_T UD_DSTATE;                    /* '<S3>/UD' */
 } DW;
@@ -54,6 +48,7 @@ typedef struct {
 typedef struct {
   real_T theta;                        /* '<Root>/theta' */
   real_T speed_rad;                    /* '<Root>/speed_rad' */
+  real_T ref;                          /* '<Root>/ref' */
 } ExtU;
 
 /* External outputs (root outports fed by signals with auto storage) */
@@ -64,21 +59,6 @@ typedef struct {
 /* Real-time Model Data Structure */
 struct tag_RTM {
   const char_T * volatile errorStatus;
-  RTWSolverInfo solverInfo;
-
-  /*
-   * Timing:
-   * The following substructure contains information regarding
-   * the timing information for the model.
-   */
-  struct {
-    uint32_T clockTick0;
-    time_T stepSize0;
-    uint32_T clockTick1;
-    SimTimeStep simTimeStep;
-    time_T *t;
-    time_T tArray[2];
-  } Timing;
 };
 
 /* Block signals and states (auto storage) */

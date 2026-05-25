@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'Subsystem'.
  *
- * Model version                  : 1.7
+ * Model version                  : 1.9
  * Simulink Coder version         : 8.10 (R2016a) 10-Feb-2016
- * C/C++ source code generated on : Tue May 05 21:06:41 2026
+ * C/C++ source code generated on : Mon May 25 15:53:58 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -16,23 +16,6 @@
  */
 
 #include "Subsystem.h"
-
-/* Private macros used by the generated code to access rtModel */
-#ifndef rtmIsMajorTimeStep
-# define rtmIsMajorTimeStep(rtm)       (((rtm)->Timing.simTimeStep) == MAJOR_TIME_STEP)
-#endif
-
-#ifndef rtmIsMinorTimeStep
-# define rtmIsMinorTimeStep(rtm)       (((rtm)->Timing.simTimeStep) == MINOR_TIME_STEP)
-#endif
-
-#ifndef rtmGetTPtr
-# define rtmGetTPtr(rtm)               ((rtm)->Timing.t)
-#endif
-
-#ifndef rtmSetTPtr
-# define rtmSetTPtr(rtm, val)          ((rtm)->Timing.t = (val))
-#endif
 
 /* Block signals and states (auto storage) */
 DW rtDW;
@@ -51,69 +34,68 @@ RT_MODEL *const rtM = &rtM_;
 void Subsystem_step(void)
 {
   /* local block i/o variables */
-  real_T rtb_TSamp;
   real_T rtb_Saturation;
-  real_T Sum;
-  int32_T tmp;
+  real_T rtb_DiscreteStateSpace[3];
+  real_T rtb_Sum1;
+  real_T rtb_ProportionalGain;
+  real_T rtb_TSamp;
+  real_T Integrator;
+
+  /* Sum: '<S1>/Sum1' incorporates:
+   *  Inport: '<Root>/ref'
+   *  Inport: '<Root>/theta'
+   */
+  rtb_Sum1 = rtU.ref - rtU.theta;
 
   /* DiscreteStateSpace: '<S1>/Discrete State-Space' */
   {
-    rtDW.DiscreteStateSpace[0] = (1.0)*rtDW.Observer[0];
-    rtDW.DiscreteStateSpace[1] = (1.0)*rtDW.Observer[1];
-    rtDW.DiscreteStateSpace[2] = (1.0)*rtDW.Observer[2];
+    rtb_DiscreteStateSpace[0] = (1.0)*rtDW.Observer[0];
+    rtb_DiscreteStateSpace[1] = (1.0)*rtDW.Observer[1];
+    rtb_DiscreteStateSpace[2] = (1.0)*rtDW.Observer[2];
   }
-
-  /* Step: '<S1>/Step' */
-  if (rtM->Timing.t[0] < 3.0) {
-    tmp = 0;
-  } else {
-    tmp = 6;
-  }
-
-  /* End of Step: '<S1>/Step' */
 
   /* Sum: '<S1>/Sum' incorporates:
    *  Gain: '<S1>/Gain'
-   *  Inport: '<Root>/theta'
-   *  Sum: '<S1>/Sum1'
    */
-  Sum = ((real_T)tmp - rtU.theta) * 5.0 - rtDW.DiscreteStateSpace[1];
+  rtb_Sum1 = 5.0 * rtb_Sum1 - rtb_DiscreteStateSpace[1];
+
+  /* Gain: '<S2>/Proportional Gain' */
+  rtb_ProportionalGain = 2.8579582517938684 * rtb_Sum1;
 
   /* DiscreteIntegrator: '<S2>/Integrator' incorporates:
    *  Gain: '<S2>/Integral Gain'
    */
-  rtDW.Integrator = 20.384866275277236 * Sum * 0.001 + rtDW.Integrator_DSTATE;
+  Integrator = 20.384866275277236 * rtb_Sum1 * 0.001 + rtDW.Integrator_DSTATE;
 
-  /* SampleTimeMath: '<S3>/TSamp' incorporates:
-   *  Gain: '<S2>/Derivative Gain'
+  /* Gain: '<S2>/Derivative Gain' */
+  rtb_Sum1 *= 0.0;
+
+  /* SampleTimeMath: '<S3>/TSamp'
    *
    * About '<S3>/TSamp':
    *  y = u * K where K = 1 / ( w * Ts )
    */
-  rtb_TSamp = 0.0 * Sum * 1000.0;
+  rtb_TSamp = rtb_Sum1 * 1000.0;
 
   /* Sum: '<S2>/Sum' incorporates:
    *  Delay: '<S3>/UD'
-   *  Gain: '<S2>/Proportional Gain'
    *  Sum: '<S3>/Diff'
    */
-  Sum = (2.8579582517938684 * Sum + rtDW.Integrator) + (rtb_TSamp -
-    rtDW.UD_DSTATE);
+  rtb_Sum1 = (rtb_ProportionalGain + Integrator) + (rtb_TSamp - rtDW.UD_DSTATE);
+
+  /* Outport: '<Root>/input' */
+  rtY.input = rtb_Sum1;
 
   /* Saturate: '<S1>/Saturation' */
-  if (Sum > 12.0) {
+  if (rtb_Sum1 > 12.0) {
     rtb_Saturation = 12.0;
-  } else if (Sum < -12.0) {
+  } else if (rtb_Sum1 < -12.0) {
     rtb_Saturation = -12.0;
   } else {
-    rtb_Saturation = Sum;
+    rtb_Saturation = rtb_Sum1;
   }
 
   /* End of Saturate: '<S1>/Saturation' */
-
-  /* Outport: '<Root>/input' */
-  rtY.input = Sum;
-
   /* Update for DiscreteStateSpace: '<S1>/Discrete State-Space' */
   {
     real_T xnew[3];
@@ -137,49 +119,16 @@ void Subsystem_step(void)
   }
 
   /* Update for DiscreteIntegrator: '<S2>/Integrator' */
-  rtDW.Integrator_DSTATE = rtDW.Integrator;
+  rtDW.Integrator_DSTATE = Integrator;
 
   /* Update for Delay: '<S3>/UD' */
   rtDW.UD_DSTATE = rtb_TSamp;
-
-  /* Update absolute time for base rate */
-  /* The "clockTick0" counts the number of times the code of this task has
-   * been executed. The absolute time is the multiplication of "clockTick0"
-   * and "Timing.stepSize0". Size of "clockTick0" ensures timer will not
-   * overflow during the application lifespan selected.
-   */
-  rtM->Timing.t[0] =
-    (++rtM->Timing.clockTick0) * rtM->Timing.stepSize0;
-
-  {
-    /* Update absolute timer for sample time: [0.001s, 0.0s] */
-    /* The "clockTick1" counts the number of times the code of this task has
-     * been executed. The resolution of this integer timer is 0.001, which is the step size
-     * of the task. Size of "clockTick1" ensures timer will not overflow during the
-     * application lifespan selected.
-     */
-    rtM->Timing.clockTick1++;
-  }
 }
 
 /* Model initialize function */
 void Subsystem_initialize(void)
 {
-  /* Registration code */
-  {
-    /* Setup solver object */
-    rtsiSetSimTimeStepPtr(&rtM->solverInfo, &rtM->Timing.simTimeStep);
-    rtsiSetTPtr(&rtM->solverInfo, &rtmGetTPtr(rtM));
-    rtsiSetStepSizePtr(&rtM->solverInfo, &rtM->Timing.stepSize0);
-    rtsiSetErrorStatusPtr(&rtM->solverInfo, ((const char_T **)
-      (&rtmGetErrorStatus(rtM))));
-    rtsiSetRTModelPtr(&rtM->solverInfo, rtM);
-  }
-
-  rtsiSetSimTimeStep(&rtM->solverInfo, MAJOR_TIME_STEP);
-  rtsiSetSolverName(&rtM->solverInfo,"FixedStepDiscrete");
-  rtmSetTPtr(rtM, &rtM->Timing.tArray[0]);
-  rtM->Timing.stepSize0 = 0.001;
+  /* (no initialization code required) */
 }
 
 /*

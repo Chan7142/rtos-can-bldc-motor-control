@@ -47,7 +47,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Core/Inc/gpwm.h ../Core/Inc/apwm.h ../Core/Inc/Subsystem.h \
  ../Core/Inc/rtwtypes.h ../Core/Inc/rtw_continuous.h \
  ../Core/Inc/rtw_solver.h ../Core/Inc/stm32f7xx_it.h \
- ../Core/Inc/encoder.h ../Core/Inc/usart.h ../Core/Inc/timer.h
+ ../Core/Inc/encoder.h ../Core/Inc/usart.h ../Core/Inc/timer.h \
+ ../Core/Inc/can.h ../Core/Inc/stm32f7xx_it.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h:
 ../Core/Inc/stm32f7xx_hal_conf.h:
@@ -108,3 +109,5 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/encoder.h:
 ../Core/Inc/usart.h:
 ../Core/Inc/timer.h:
+../Core/Inc/can.h:
+../Core/Inc/stm32f7xx_it.h:

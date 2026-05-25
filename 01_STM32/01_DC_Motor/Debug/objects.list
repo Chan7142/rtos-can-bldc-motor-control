@@ -1,5 +1,6 @@
 "./Core/Src/Subsystem.o"
 "./Core/Src/apwm.o"
+"./Core/Src/can.o"
 "./Core/Src/dma.o"
 "./Core/Src/dwt.o"
 "./Core/Src/encoder.o"
