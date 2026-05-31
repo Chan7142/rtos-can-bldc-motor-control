@@ -56,6 +56,7 @@ uint32_t debug1 = 0;
 uint32_t debug2 = 0;
 uint32_t cnt_cur = 0;
 uint32_t cnt_prev = 0;
+static float desired_theta_deg = 0.0f;
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -551,7 +552,7 @@ void mControl(void *argument)
   /* Infinite loop */
   for(;;)
   {
-	mCount++;
+
     osDelay(1);
   }
   /* USER CODE END mControl */
@@ -573,7 +574,7 @@ void SPI_T(void *argument)
 	  //
 	  sprintf(buf, "RPM: %5d", (int)speed_rpm);
 	  ST7735_WriteString(10, 50, buf, Font_7x10, 0xFFFF, 0x0000);
-    osDelay(1);
+    osDelay(50);
   }
   /* USER CODE END SPI_T */
 }
@@ -588,11 +589,12 @@ void SPI_T(void *argument)
 void CAN_T(void *argument)
 {
   /* USER CODE BEGIN CAN_T */
-  /* Infinite loop */
+
   for(;;)
   {
-	  desired_theta = Can1_Receive_Handler(desired_theta) * pi / 180;
-	  rtU.ref = desired_theta;
+	  mCount++;
+	  desired_theta_deg = Can1_Receive_Handler(desired_theta_deg);
+	  rtU.ref = desired_theta_deg * pi / 180.0f;
 	  Can1_Send_MotorStatus(theta_degree, speed_rpm);
     osDelay(1);
   }
@@ -613,7 +615,7 @@ void UART_T(void *argument)
   for(;;)
   {
 	  printf("%.2f, %.2f\n", time, speed_rad);
-    osDelay(1);
+    osDelay(10);
   }
   /* USER CODE END UART_T */
 }
