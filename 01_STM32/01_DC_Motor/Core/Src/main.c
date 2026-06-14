@@ -41,9 +41,6 @@ float gCount = 0;
 float mCount = 0;
 float time = 0;
 float u_k = 0;
-float d1 = 0;
-float d2 = 0;
-float D = 0;
 float pi = 3.14159265;
 float speed_rad = 0;
 float speed_rpm = 0;
@@ -482,14 +479,8 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void motor_input(float input){
-	D = input / 12;
-	if(D > 1) D = 1;
-	else if(D < -1) D = -1;
-	d1 = (1+D)/2;
-	d2 = (1-D)/2;
-	PWM_TIM1_CH1_Setduty(d1);
-	PWM_TIM1_CH2_Setduty(d2);
+void PWM1_INPUT(float input){
+	PWM_TIM1_CH1_Setduty(input/12);
 }
 void get_motor_status(){
 	cnt_cur = Get_Encoder_Count();
@@ -509,13 +500,14 @@ void get_motor_status(){
 void TIM2_IRQHandler(void) {
     if (TIM2->SR & (1<<0)) {
         TIM2->SR &= ~(1<<0);
-        get_motor_status();
-        rtU.theta = theta_rad;   // 위치 피드백 연결
-        rtU.speed_rad = speed_rad;    // 속도 피드백 연결
-        Subsystem_step();
-        motor_input((float)rtY.input);
-       	gCount += Ts;
-        time = gCount;
+//        get_motor_status();
+//        rtU.theta = theta_rad;   // 위치 피드백 연결
+//        rtU.speed_rad = speed_rad;    // 속도 피드백 연결
+//        Subsystem_step();
+//        motor_input((float)rtY.input);
+//       	gCount += Ts;
+//        time = gCount;
+        PWM1_INPUT(6);
     }
 }
 /* USER CODE END 4 */
@@ -593,9 +585,9 @@ void CAN_T(void *argument)
   for(;;)
   {
 	  mCount++;
-	  desired_theta_deg = Can1_Receive_Handler(desired_theta_deg);
+	 // desired_theta_deg = Can1_Receive_Handler(desired_theta_deg);
 	  rtU.ref = desired_theta_deg * pi / 180.0f;
-	  Can1_Send_MotorStatus(theta_degree, speed_rpm);
+	 // Can1_Send_MotorStatus(theta_degree, speed_rpm);
     osDelay(1);
   }
   /* USER CODE END CAN_T */

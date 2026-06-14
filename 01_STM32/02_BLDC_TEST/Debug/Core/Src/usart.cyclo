@@ -1,0 +1,4 @@
+../Core/Src/usart.c:10:6:Usart3_TX_Init	1
+../Core/Src/usart.c:29:6:DMA_USART3_Init	2
+../Core/Src/usart.c:39:6:USART3_DMA_Send	2
+../Core/Src/usart.c:54:5:_write	2
