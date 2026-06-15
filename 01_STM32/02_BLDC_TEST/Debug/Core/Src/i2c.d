@@ -7,7 +7,7 @@ Core/Src/i2c.o: ../Core/Src/i2c.c ../Core/Inc/i2c.h ../Core/Inc/dma.h \
  ../Drivers/CMSIS/Include/cmsis_gcc.h \
  ../Drivers/CMSIS/Include/mpu_armv7.h \
  ../Drivers/CMSIS/Device/ST/STM32F7xx/Include/system_stm32f7xx.h \
- ../Core/Inc/usart.h ../Core/Inc/stm32f7xx_it.h
+ ../Core/Inc/stm32f7xx_it.h ../Core/Inc/usart.h
 ../Core/Inc/i2c.h:
 ../Core/Inc/dma.h:
 ../Core/Inc/spi.h:
@@ -20,5 +20,5 @@ Core/Src/i2c.o: ../Core/Src/i2c.c ../Core/Inc/i2c.h ../Core/Inc/dma.h \
 ../Drivers/CMSIS/Include/cmsis_gcc.h:
 ../Drivers/CMSIS/Include/mpu_armv7.h:
 ../Drivers/CMSIS/Device/ST/STM32F7xx/Include/system_stm32f7xx.h:
-../Core/Inc/usart.h:
 ../Core/Inc/stm32f7xx_it.h:
+../Core/Inc/usart.h:

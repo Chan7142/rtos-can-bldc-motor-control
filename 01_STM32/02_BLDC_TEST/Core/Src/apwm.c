@@ -14,7 +14,9 @@ void PWM_TIM1_Base_Init(uint32_t freq) {
     TIM1->CR1 |= (1 << 7);
 
     TIM1->CR1 &= ~(3 << 5);
-    //TIM1->CR1 |= (1 << 5);
+    TIM1->CR1 |= (1 << 5);
+    TIM1->CR2 &= ~(7 << 4); // MMS 비트 초기화
+    TIM1->CR2 |= (2 << 4);
 }
 //PE9 PE8
 void PWM_TIM1_CH1_Init(){
@@ -99,6 +101,7 @@ void PWM_TIM1_CH3_Init(){
     TIM1->BDTR |= (1 << 15);
 
     TIM1->CR1 |= (1 << 0);
+
 }
 
 void PWM_TIM1_CH3_Setduty(float duty_per){

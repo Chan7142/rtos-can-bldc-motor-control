@@ -1,6 +1,7 @@
 #ifndef GPIO_H__
 #define GPIO_H__
 #include "stm32f767xx.h"
+#include "stm32f7xx_it.h"
 #include <stdint.h>
 
 //void GPIO_pin_Mode(Gpio_Struct* GPIOx, uint8_t pin, uint8_t mode);
@@ -8,5 +9,5 @@
 //uint8_t GPIO_Read_Pin(Gpio_Struct* GPIOx, uint8_t pin);
 //void GPIO_Clock_Enable(Gpio_Struct* GPIOx);
 //void GPIO_Speed_Set(Gpio_Struct* GPIOx, uint8_t pin, uint8_t speed);
-
+void MX_GPIOG_Init(void);
 #endif /* __GPIO_H__ */

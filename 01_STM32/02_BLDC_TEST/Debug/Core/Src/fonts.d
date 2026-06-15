@@ -7,8 +7,8 @@ Core/Src/fonts.o: ../Core/Src/fonts.c ../Core/Inc/fonts.h \
  ../Drivers/CMSIS/Include/cmsis_gcc.h \
  ../Drivers/CMSIS/Include/mpu_armv7.h \
  ../Drivers/CMSIS/Device/ST/STM32F7xx/Include/system_stm32f7xx.h \
- ../Core/Inc/spi.h ../Core/Inc/dma.h ../Core/Inc/usart.h \
- ../Core/Inc/dwt.h ../Core/Inc/spi.h \
+ ../Core/Inc/stm32f7xx_it.h ../Core/Inc/spi.h ../Core/Inc/dma.h \
+ ../Core/Inc/usart.h ../Core/Inc/dwt.h ../Core/Inc/spi.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h \
  ../Core/Inc/stm32f7xx_hal_conf.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc.h \
@@ -43,6 +43,7 @@ Core/Src/fonts.o: ../Core/Src/fonts.c ../Core/Inc/fonts.h \
 ../Drivers/CMSIS/Include/cmsis_gcc.h:
 ../Drivers/CMSIS/Include/mpu_armv7.h:
 ../Drivers/CMSIS/Device/ST/STM32F7xx/Include/system_stm32f7xx.h:
+../Core/Inc/stm32f7xx_it.h:
 ../Core/Inc/spi.h:
 ../Core/Inc/dma.h:
 ../Core/Inc/usart.h:

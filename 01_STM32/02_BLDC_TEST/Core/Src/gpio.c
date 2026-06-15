@@ -34,3 +34,18 @@
 //	GPIOx->OSPEEDR &= ~(3UL << (pin * 2));
 //	GPIOx->OSPEEDR |= (speed<<(pin*2));
 //}
+
+void MX_GPIOG_Init(void)
+{
+	RCC->AHB1ENR |= (1 << 6);
+
+
+	GPIOG->MODER &= ~(3 << (2 * 0));
+	GPIOG->MODER |=  (1 << (2 * 0));
+
+	GPIOG->OTYPER &= ~(1 << 0);
+
+	GPIOG->PUPDR &= ~(3 << (2 * 0));
+
+	GPIOG->OSPEEDR &= ~(3 << (2 * 0));
+}

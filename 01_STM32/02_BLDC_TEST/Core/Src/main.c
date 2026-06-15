@@ -28,12 +28,14 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <Subsystem.h>
+#include <math.h>
 #include "stm32f7xx_it.h"
 #include "encoder.h"
 #include "usart.h"
 #include "timer.h"
 #include "can.h"
 #include "i2c.h"
+#include "adc.h"
 extern volatile uint32_t msTicks = 0;
 const uint32_t ENCODER_RESOLUTION = 1320;
 void SystemClock_Config_Max(void);
@@ -52,12 +54,28 @@ float theta_rad = 0;
 float theta_degree = 0;
 float desired_theta = 0;
 float Ts = 0.001;
+float Tc = 0.0002;
+const float pole_pairs = 7;
+float angle_e = 0;
+float I_a = 0;
+float I_b = 0;
+float I_c = 0;
+float Rs = 2.55;
+float Ls = 0.00086;
+float Wc = 0;
+float Kpc = 0;
+float Kic = 0;
+float V_ref = 0;
+float Iq_ref = 0;
+float Id = 0;
+float Iq = 0;
 char buf[32];
 uint32_t debug1 = 0;
 uint32_t debug2 = 0;
 uint32_t cnt_cur = 0;
 uint32_t cnt_prev = 0;
 static float desired_theta_deg = 0.0f;
+float spi_count = 0;
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -196,6 +214,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_GPIOG_Init();
   MX_ETH_Init();
   MX_USB_OTG_FS_PCD_Init();
   /* USER CODE BEGIN 2 */
@@ -209,7 +228,7 @@ int main(void)
 	ST7735_WriteString(10, 50, "Hello World", Font_7x10, 0xFFFF, 0x0000);
 	PWM_TIM5_CH1_Init(1000);
 	PWM_TIM5_CH1_Setduty(80); //80% pwm duty
-	PWM_TIM1_Base_Init(1000);
+	PWM_TIM1_Base_Init(5000);
 	PWM_TIM1_CH1_Init();
 	PWM_TIM1_CH2_Init();
 	PWM_TIM1_CH3_Init();
@@ -218,12 +237,18 @@ int main(void)
 	DMA_USART3_Init();
 	TIM2_Init();
 	Subsystem_initialize();
-	PWM_TIM1_CH1_Setduty(0.5);
-	PWM_TIM1_CH2_Setduty(0.3);
-	PWM_TIM1_CH3_Setduty(0.1);
+//	PWM_TIM1_CH1_Setduty(0.5);
+//	PWM_TIM1_CH2_Setduty(0);
+//	PWM_TIM1_CH3_Setduty(0);
 	Can1_Init();
 	Can1_Filter_Config();
 	I2C1_DMA_Init();
+	ADC_Init();
+	Iq_ref = 1.0f;
+	Wc = 1/Ts;
+	Kpc = Ls*Wc;
+	Kic = Rs*Wc;
+//	PWM_TIM1_CH1_Setduty(0.5);
 /* USER CODE END RTOS_EVENTS */
 /* Start scheduler */
 
@@ -488,28 +513,103 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void motor_input(float input){
-	D = input / 12;
-	if(D > 1) D = 1;
-	else if(D < -1) D = -1;
-	d1 = (1+D)/2;
-	d2 = (1-D)/2;
-	PWM_TIM1_CH1_Setduty(d1);
-	PWM_TIM1_CH2_Setduty(d2);
-}
+float ed = 0;
+float eq = 0;
+float ed_km1 = 0;
+float eq_km1 = 0;
+float Va = 0;
+float Vb = 0;
+float Vc = 0;
+float Vd_pi = 0; float Vd_km1 = 0; float Vd = 0;
+float Vq_pi = 0; float Vq_km1 = 0; float Vq = 0;
+
+float flux = 0.0035;
+float theta_rad_prev = 0;
+float V_bus = 12.0f;
 void get_motor_status(){
 	theta_rad = Process_Encoder_Data();
 	theta_degree = theta_rad * 180 / pi;
+	angle_e = theta_rad * pole_pairs;
+	angle_e = fmodf(angle_e, 2.0f * pi) - 2.17058086;
+	speed_rad = (theta_rad - theta_rad_prev)/Tc;
+	speed_rpm = speed_rad * 60 / (2*pi);
+	theta_rad_prev = theta_rad;
+}
+void ADC_IRQHandler(void) {
+    if (ADC1->SR & (1 << 2)) { // JEOC 비트 (Bit 2)가 1인지 확인
+    	ADC1->SR = ~(1 << 2);
+        // 변환된 전류 데이터 읽기
+    	float V_pin_a = (float)(ADC1->JDR1) * (3.3f / 4095.0f);
+    	float V_pin_b = (float)(ADC1->JDR2) * (3.3f / 4095.0f);
+    	I_a = (V_pin_a - 1.65f) / (0.005f * 10.0f);
+    	I_b = (V_pin_b - 1.65f) / (0.005f * 10.0f);
+
+        I_c = -I_a - I_b;
+        float I_alpha = I_a;
+        float I_beta = (I_a + 2.0f * I_b) / sqrtf(3.0f);
+
+        float cos_t = cosf(angle_e);
+        float sin_t = sinf(angle_e);
+
+         Id =  I_alpha * cos_t + I_beta * sin_t;
+         Iq = -I_alpha * sin_t + I_beta * cos_t;
+
+        //PI 전류제어
+        ed = 0 - Id;
+        eq = Iq_ref - Iq;
+
+        Vd_pi = Vd_km1 + Kpc * (ed - ed_km1) + Kic*Tc*ed;
+		Vq_pi = Vq_km1 + Kpc * (eq - eq_km1) + Kic*Tc*eq;
+
+		ed_km1 = ed; Vd_km1 = Vd_pi;
+        eq_km1 = eq; Vq_km1 = Vq_pi;
+
+        Vd = Vd_pi - speed_rad * Ls * Iq;
+        Vq = Vq_pi + speed_rad * Ls * Id + speed_rad * flux;
+        //Vd = 0;
+        //Vq = 5;
+
+		float V_alpha = Vd * cos_t - Vq * sin_t;
+		float V_beta  = Vd * sin_t + Vq * cos_t;
+
+		Va = V_alpha;
+		Vb = (-V_alpha + sqrtf(3.0f) * V_beta) / 2.0f;
+		Vc = (-V_alpha - sqrtf(3.0f) * V_beta) / 2.0f;
+
+		float duty_a = (Va / V_bus) + 0.5f;
+		float duty_b = (Vb / V_bus) + 0.5f;
+		float duty_c = (Vc / V_bus) + 0.5f;
+
+		if (duty_a > 1.0f) duty_a = 1.0f; else if (duty_a < 0.0f) duty_a = 0.0f;
+		if (duty_b > 1.0f) duty_b = 1.0f; else if (duty_b < 0.0f) duty_b = 0.0f;
+		if (duty_c > 1.0f) duty_c = 1.0f; else if (duty_c < 0.0f) duty_c = 0.0f;
+
+		PWM_TIM1_CH1_Setduty(duty_a);
+		PWM_TIM1_CH2_Setduty(duty_b);
+		PWM_TIM1_CH3_Setduty(duty_c);
+//		PWM_TIM1_CH1_Setduty(0.3);
+//		PWM_TIM1_CH2_Setduty(0.0);
+//		PWM_TIM1_CH3_Setduty(0.0);
+		gCount += Ts;
+		time = gCount;
+
+        GPIOG->ODR ^= (1 << 0); //확인용 토글
+
+    }
+
+    if (ADC2->SR & (1 << 2)) {
+        ADC2->SR &= ~(1 << 2);
+    }
 }
 void TIM2_IRQHandler(void) {
     if (TIM2->SR & (1<<0)) {
         TIM2->SR &= ~(1<<0);
-        rtU.theta = theta_rad;   // 위치 피드백 연결
-        rtU.speed_rad = speed_rad;    // 속도 피드백 연결
-        Subsystem_step();
-        motor_input((float)rtY.input);
-       	gCount += Ts;
-        time = gCount;
+//        rtU.theta = theta_rad;   // 위치 피드백 연결
+//        rtU.speed_rad = speed_rad;    // 속도 피드백 연결
+//        Subsystem_step();
+//        motor_input((float)rtY.input);
+//       	gCount += Ts;
+//        time = gCount;
     }
 }
 /* USER CODE END 4 */
@@ -527,7 +627,8 @@ void StartDefaultTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+	get_motor_status();
+    osDelay(0.2);
   }
   /* USER CODE END 5 */
 }
@@ -546,7 +647,7 @@ void mControl(void *argument)
   /* Infinite loop */
   for(;;)
   {
-	  get_motor_status();
+
     osDelay(1);
   }
   /* USER CODE END mControl */
@@ -568,6 +669,7 @@ void SPI_T(void *argument)
 	  //
 	  sprintf(buf, "RPM: %5d", (int)speed_rpm);
 	  ST7735_WriteString(10, 50, buf, Font_7x10, 0xFFFF, 0x0000);
+	  spi_count++;
     osDelay(50);
   }
   /* USER CODE END SPI_T */
