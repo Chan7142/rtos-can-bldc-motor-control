@@ -6,13 +6,13 @@
 #include "gpio.h"
 
 typedef struct {
-    volatile uint32_t CR1;    // 0x00: 제어 레지스터 1
-    volatile uint32_t CR2;    // 0x04: 제어 레지스터 2 (DMA 요청 비트가 여기 있음)
-    volatile uint32_t SR;     // 0x08: 상태 레지스터
-    volatile uint32_t DR;     // 0x0C: 데이터 레지스터 (여기에 쓰면 MOSI로 나감)
-    volatile uint32_t CRCPR;  // 0x10: CRC 다항식
-    volatile uint32_t RXCRCR; // 0x14: RX CRC
-    volatile uint32_t TXCRCR; // 0x18: TX CRC
+    volatile uint32_t CR1;
+    volatile uint32_t CR2;
+    volatile uint32_t SR;
+    volatile uint32_t DR;
+    volatile uint32_t CRCPR;
+    volatile uint32_t RXCRCR;
+    volatile uint32_t TXCRCR;
 } MY_SPI_TypeDef;
 
 #define SPI1    ((MY_SPI_TypeDef *)SPI1_BASE)

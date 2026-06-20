@@ -69,7 +69,6 @@ void CS_ON(void){
 }
 
 void CS_OFF(void){
-    // GPIOD 포트의 14번 핀에 하이(1) 신호를 주어 슬레이브 칩을 비활성화(해제)합니다.
     HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, GPIO_PIN_SET);
 }
 

@@ -54,13 +54,13 @@ float theta_rad = 0;
 float theta_degree = 0;
 float desired_theta = 0;
 float Ts = 0.001;
-float Tc = 0.0002;
+float Tc = 0.001;
 const float pole_pairs = 7;
 float angle_e = 0;
 float I_a = 0;
 float I_b = 0;
 float I_c = 0;
-float Rs = 2.55;
+float Rs = 2.3;
 float Ls = 0.00086;
 float Wc = 0;
 float Kpc = 0;
@@ -70,8 +70,8 @@ float Iq_ref = 0;
 float Id = 0;
 float Iq = 0;
 char buf[32];
-uint32_t debug1 = 0;
-uint32_t debug2 = 0;
+uint32_t debug_ADC1 = 0;
+uint32_t debug_ADC2 = 0;
 uint32_t cnt_cur = 0;
 uint32_t cnt_prev = 0;
 static float desired_theta_deg = 0.0f;
@@ -228,7 +228,7 @@ int main(void)
 	ST7735_WriteString(10, 50, "Hello World", Font_7x10, 0xFFFF, 0x0000);
 	PWM_TIM5_CH1_Init(1000);
 	PWM_TIM5_CH1_Setduty(80); //80% pwm duty
-	PWM_TIM1_Base_Init(5000);
+	PWM_TIM1_Base_Init(1000); //5000
 	PWM_TIM1_CH1_Init();
 	PWM_TIM1_CH2_Init();
 	PWM_TIM1_CH3_Init();
@@ -237,17 +237,16 @@ int main(void)
 	DMA_USART3_Init();
 	TIM2_Init();
 	Subsystem_initialize();
-//	PWM_TIM1_CH1_Setduty(0.5);
-//	PWM_TIM1_CH2_Setduty(0);
-//	PWM_TIM1_CH3_Setduty(0);
 	Can1_Init();
 	Can1_Filter_Config();
 	I2C1_DMA_Init();
 	ADC_Init();
-	Iq_ref = 1.0f;
-	Wc = 1/Ts;
+	//Iq_ref = 0.4f;
+	Wc = 2.0f * pi * 1.0f;
 	Kpc = Ls*Wc;
 	Kic = Rs*Wc;
+//	Kpc = 0.1;
+//	Kic = 0.01;
 //	PWM_TIM1_CH1_Setduty(0.5);
 /* USER CODE END RTOS_EVENTS */
 /* Start scheduler */
@@ -522,27 +521,39 @@ float Vb = 0;
 float Vc = 0;
 float Vd_pi = 0; float Vd_km1 = 0; float Vd = 0;
 float Vq_pi = 0; float Vq_km1 = 0; float Vq = 0;
-
+float Tm = 0.01;
 float flux = 0.0035;
 float theta_rad_prev = 0;
 float V_bus = 12.0f;
 void get_motor_status(){
 	theta_rad = Process_Encoder_Data();
 	theta_degree = theta_rad * 180 / pi;
-	angle_e = theta_rad * pole_pairs;
-	angle_e = fmodf(angle_e, 2.0f * pi) - 2.17058086;
-	speed_rad = (theta_rad - theta_rad_prev)/Tc;
+	angle_e = theta_rad * pole_pairs - 1.60f;
+	angle_e = fmodf(angle_e, 2.0f * pi);
+	float delta_theta = theta_rad - theta_rad_prev;
+	if (delta_theta > pi) {
+	    delta_theta -= 2.0f * pi;
+	}
+	else if (delta_theta < -pi) {
+	    delta_theta += 2.0f * pi;
+	}
+	speed_rad = (delta_theta)/Tc;
 	speed_rpm = speed_rad * 60 / (2*pi);
 	theta_rad_prev = theta_rad;
 }
 void ADC_IRQHandler(void) {
     if (ADC1->SR & (1 << 2)) { // JEOC 비트 (Bit 2)가 1인지 확인
     	ADC1->SR = ~(1 << 2);
+    	get_motor_status();
+    	//angle_e = angle_e + speed_rad * pole_pairs * Tc; //전기각 보간
+
         // 변환된 전류 데이터 읽기
+    	debug_ADC1 = ADC1->JDR1;
+		debug_ADC2 = ADC1->JDR2;
     	float V_pin_a = (float)(ADC1->JDR1) * (3.3f / 4095.0f);
     	float V_pin_b = (float)(ADC1->JDR2) * (3.3f / 4095.0f);
-    	I_a = (V_pin_a - 1.65f) / (0.005f * 10.0f);
-    	I_b = (V_pin_b - 1.65f) / (0.005f * 10.0f);
+    	I_a = (V_pin_a - 1.65f) / (1.0f * 40.0f);
+    	I_b = (V_pin_b - 1.65f) / (1.0f * 40.0f);
 
         I_c = -I_a - I_b;
         float I_alpha = I_a;
@@ -561,13 +572,22 @@ void ADC_IRQHandler(void) {
         Vd_pi = Vd_km1 + Kpc * (ed - ed_km1) + Kic*Tc*ed;
 		Vq_pi = Vq_km1 + Kpc * (eq - eq_km1) + Kic*Tc*eq;
 
+		if (Vd_pi > V_bus) Vd_pi = V_bus;
+		else if (Vd_pi < -V_bus) Vd_pi = -V_bus;
+
+		if (Vq_pi > V_bus) Vq_pi = V_bus;
+		else if (Vq_pi < -V_bus) Vq_pi = -V_bus;
+
+		ed_km1 = ed; Vd_km1 = Vd_pi;
+		eq_km1 = eq; Vq_km1 = Vq_pi;
+
 		ed_km1 = ed; Vd_km1 = Vd_pi;
         eq_km1 = eq; Vq_km1 = Vq_pi;
 
         Vd = Vd_pi - speed_rad * Ls * Iq;
         Vq = Vq_pi + speed_rad * Ls * Id + speed_rad * flux;
-        //Vd = 0;
-        //Vq = 5;
+//        Vd = 0;
+//        Vq = 1.5;
 
 		float V_alpha = Vd * cos_t - Vq * sin_t;
 		float V_beta  = Vd * sin_t + Vq * cos_t;
@@ -587,13 +607,37 @@ void ADC_IRQHandler(void) {
 		PWM_TIM1_CH1_Setduty(duty_a);
 		PWM_TIM1_CH2_Setduty(duty_b);
 		PWM_TIM1_CH3_Setduty(duty_c);
-//		PWM_TIM1_CH1_Setduty(0.3);
-//		PWM_TIM1_CH2_Setduty(0.0);
-//		PWM_TIM1_CH3_Setduty(0.0);
+
 		gCount += Ts;
 		time = gCount;
 
-        GPIOG->ODR ^= (1 << 0); //확인용 토글
+//    	float V_test = 1.5f; // 12V 배터리 기준 약 1.5V 인가
+//
+//    	        // 1. 역방향 변환 시 전기각을 무조건 0으로 고정
+//    	        float cos_t = 1.0f; // cos(0)
+//    	        float sin_t = 0.0f; // sin(0)
+//
+//    	        // 2. D축에만 전압 인가, Q축은 0 (회전이 아닌 자석 정렬 목적)
+//    	        float Vd_test = V_test;
+//    	        float Vq_test = 0.0f;
+//
+//    	        // 3. 역 파크/클라크 변환
+//    	        float V_alpha = Vd_test * cos_t - Vq_test * sin_t;
+//    	        float V_beta  = Vd_test * sin_t + Vq_test * cos_t;
+//
+//    	        Va = V_alpha;
+//    	        Vb = (-V_alpha + sqrtf(3.0f) * V_beta) / 2.0f;
+//    	        Vc = (-V_alpha - sqrtf(3.0f) * V_beta) / 2.0f;
+//
+//    	        float duty_a = (Va / V_bus) + 0.5f;
+//    	        float duty_b = (Vb / V_bus) + 0.5f;
+//    	        float duty_c = (Vc / V_bus) + 0.5f;
+//
+//    	        PWM_TIM1_CH1_Setduty(duty_a);
+//    	        PWM_TIM1_CH2_Setduty(duty_b);
+//    	        PWM_TIM1_CH3_Setduty(duty_c);
+
+		GPIOG->ODR ^= (1 << 0); //확인용 토글
 
     }
 
@@ -610,6 +654,10 @@ void TIM2_IRQHandler(void) {
 //        motor_input((float)rtY.input);
 //       	gCount += Ts;
 //        time = gCount;
+//        get_motor_status();
+//        GPIOG->ODR ^= (1 << 0); //확인용 토글
+        Iq_ref = 0.1f*(35.65f-speed_rad);
+
     }
 }
 /* USER CODE END 4 */
@@ -627,8 +675,8 @@ void StartDefaultTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
-	get_motor_status();
-    osDelay(0.2);
+
+    osDelay(1);
   }
   /* USER CODE END 5 */
 }

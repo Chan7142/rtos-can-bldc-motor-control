@@ -33,7 +33,7 @@ void I2C1_DMA_Init(){
 	DMA1->S[6].CR |= (1 << 6);  // DIR = 01 (Memory-to-peripheral, 메모리 -> 주변장치)
 	DMA1->S[6].PAR = (uint32_t)&(I2C1->TXDR);
 
-	I2C1->TIMINGR = 0x40912732;
+	I2C1->TIMINGR = 0x20404768;
 	// I2C 내부 DMA 활성화 및 기본 타이밍 설정
 	I2C1->CR1 |= (1 << 14) | (1 << 15);     // DMAEN = 1 (I2C 내부에서 DMA 요청을 던지도록 허용)
 
@@ -85,11 +85,11 @@ void I2C1_ReadReg_DMA(uint8_t reg_addr, uint8_t *pBuffer, uint16_t size) {
 
 float Process_Encoder_Data(void) {
     uint8_t raw_buffer[2] = {0};
-    uint8_t status_val = 0;
+    //uint8_t status_val = 0;
 
     // STATUS 레지스터 (0x0B) 읽기
-    I2C1_ReadReg_DMA(0x0B, &status_val, 1);
-    debug_1_i2c = status_val;
+    //I2C1_ReadReg_DMA(0x0B, &status_val, 1);
+    //debug_1_i2c = status_val;
 //    if ((status_val & (1 << 5)) == 0 || (status_val & (3 << 3)) != 0) {
 //        // 자석이 없거나 거리가 불량한 경우 예외 처리
 //        return 0.0f;

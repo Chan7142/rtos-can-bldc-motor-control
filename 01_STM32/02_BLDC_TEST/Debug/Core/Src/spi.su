@@ -3,4 +3,4 @@
 ../Core/Src/spi.c:60:6:SPI1_WriteByte_Polling	16	static
 ../Core/Src/spi.c:66:6:CS_ON	8	static
 ../Core/Src/spi.c:71:6:CS_OFF	8	static
-../Core/Src/spi.c:76:6:SPI_GPIO_Init	40	static
+../Core/Src/spi.c:75:6:SPI_GPIO_Init	40	static

@@ -44,7 +44,6 @@ typedef struct {
  * @brief 데이터시트(RM0410)를 완벽하게 준수한 bxCAN 구조체 매핑
  */
 typedef struct {
-    // 1. Control and Status Registers (오프셋: 0x000 ~ 0x01C)
     volatile uint32_t MCR;      // CAN master control register        (Offset: 0x00)
     volatile uint32_t MSR;      // CAN master status register         (Offset: 0x04)
     volatile uint32_t TSR;      // CAN transmit status register       (Offset: 0x08)
@@ -54,19 +53,14 @@ typedef struct {
     volatile uint32_t ESR;      // CAN error status register          (Offset: 0x18)
     volatile uint32_t BTR;      // CAN bit timing register            (Offset: 0x1C)
 
-    // 패딩: 0x020 ~ 0x17F 구간 채움 (0x160 바이트 = uint32_t 88개)
     volatile uint32_t RESERVED0[88];
 
-    // 2. Tx Mailboxes (오프셋: 0x180 ~ 0x1AF)
     Can_TxMailbox_TypeDef sTxMailBox[3]; // Mailbox 0, 1, 2 (각 16바이트씩 총 48바이트)
 
-    // 3. Rx FIFOs (오프셋: 0x1B0 ~ 0x1CF)
     Can_RxMailbox_TypeDef sFIFOMailBox[2]; // FIFO 0, 1 (각 16바이트씩 총 32바이트)
 
-    // 패딩: 0x1D0 ~ 0x1FF 구간 채움 (0x30 바이트 = 48바이트 = uint32_t 12개)
     volatile uint32_t RESERVED1[12];
 
-    // 4. Filter Control Registers (오프셋: 0x200 ~ 0x23F)
     volatile uint32_t FMR;      // CAN filter master register         (Offset: 0x200)
     volatile uint32_t FM1R;     // CAN filter mode register           (Offset: 0x204)
     volatile uint32_t RESERVED2; // Reserved                          (Offset: 0x208)
@@ -79,7 +73,6 @@ typedef struct {
     // 패딩: 0x220 ~ 0x23F 구간 채움 (0x20 바이트 = 32바이트 = uint32_t 8개)
     volatile uint32_t RESERVED5[8];
 
-    // 5. Filter Bank Registers (오프셋: 0x240 ~ 0x31F)
     Can_FilterBank_TypeDef sFilterRegister[28]; // Filter Bank 0 ~ 27 (각 8바이트씩 총 224바이트)
 
 } Can_struct;

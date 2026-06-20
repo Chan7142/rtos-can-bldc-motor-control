@@ -7,7 +7,7 @@ void TIM2_Init(void) {
 
 
     TIM2->PSC = 108 - 1;
-    TIM2->ARR = 1000 - 1;
+    TIM2->ARR = 10000 - 1; //10ms 단위
     TIM2->DIER |= (1 << 0);
 
     TIM2->CR1 |= (1 << 0);
