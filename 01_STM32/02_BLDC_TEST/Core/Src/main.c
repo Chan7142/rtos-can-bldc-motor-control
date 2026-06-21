@@ -69,9 +69,11 @@ float V_ref = 0;
 float Iq_ref = 0;
 float Id = 0;
 float Iq = 0;
+float ADC_ref = 0;
 char buf[32];
 uint32_t debug_ADC1 = 0;
 uint32_t debug_ADC2 = 0;
+uint32_t debug_ADC3 = 0;
 uint32_t cnt_cur = 0;
 uint32_t cnt_prev = 0;
 static float desired_theta_deg = 0.0f;
@@ -154,7 +156,7 @@ const osThreadAttr_t CAN_attributes = {
 osThreadId_t UARTHandle;
 const osThreadAttr_t UART_attributes = {
   .name = "UART",
-  .stack_size = 1024 * 4,
+  .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* USER CODE BEGIN PV */
@@ -550,10 +552,13 @@ void ADC_IRQHandler(void) {
         // 변환된 전류 데이터 읽기
     	debug_ADC1 = ADC1->JDR1;
 		debug_ADC2 = ADC1->JDR2;
+		debug_ADC3 = ADC1->JDR3;
+
     	float V_pin_a = (float)(ADC1->JDR1) * (3.3f / 4095.0f);
     	float V_pin_b = (float)(ADC1->JDR2) * (3.3f / 4095.0f);
-    	I_a = (V_pin_a - 1.65f) / (1.0f * 40.0f);
-    	I_b = (V_pin_b - 1.65f) / (1.0f * 40.0f);
+    	ADC_ref = (float)(ADC1->JDR3) * (3.3f / 4095.0f);
+    	I_a = (V_pin_a - ADC_ref) / (0.005f * 40.0f);
+    	I_b = (V_pin_b - ADC_ref) / (0.005f * 40.0f);
 
         I_c = -I_a - I_b;
         float I_alpha = I_a;
@@ -657,6 +662,7 @@ void TIM2_IRQHandler(void) {
 //        get_motor_status();
 //        GPIOG->ODR ^= (1 << 0); //확인용 토글
         Iq_ref = 0.1f*(35.65f-speed_rad);
+//        Iq_ref = 0.4;
 
     }
 }
@@ -736,7 +742,7 @@ void CAN_T(void *argument)
 
   for(;;)
   {
-	  mCount++;
+
 	  desired_theta_deg = Can1_Receive_Handler(desired_theta_deg);
 	  rtU.ref = desired_theta_deg * pi / 180.0f;
 	  Can1_Send_MotorStatus(theta_degree, speed_rpm);
@@ -758,7 +764,8 @@ void UART_T(void *argument)
   /* Infinite loop */
   for(;;)
   {
-	  printf("%.2f, %.2f\n", time, speed_rad);
+	  mCount++;
+	printf("%.2f, %.2f\n", time, speed_rad);
     osDelay(10);
   }
   /* USER CODE END UART_T */
